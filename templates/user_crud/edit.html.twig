@@ -5,7 +5,7 @@
 {% block body %}
     <h1>Modifier son Profil</h1>
 
-    {{ form_start(form, {'attr': {'id': 'new_edit_user'}}) }}
+    {{ form_start(form) }}
         {# use bootstrap for layout #}
                 <div class="row">
                         <div class="col-12">
@@ -23,10 +23,6 @@
                         <div class="col-12">
                                 <label for="paswd-label">Mot de passe</label>
                                 {{ form_widget(form.password) }}
-                        </div>
-                        <div class="col-12">
-                                <label for="verifpass">Saisir une seconde fois le mot de passe</label>
-                                <input type="password" id="verifpass" required>
                         </div>
                 </div>
                 <button class="btn btn-success">Modifier</button>

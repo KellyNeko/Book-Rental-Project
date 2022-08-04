@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>{{book.reference}}</h1>
+    <p>{{book.author.lastname ~" "~ book.author.firstname}}</p>
+    {# {% for category in book.categories %}
+        <p>{{category}}</p>
+    {% endfor %} #}
+    <a href="{{ path('book_list') }}">Retour</a>
+{% endblock %}

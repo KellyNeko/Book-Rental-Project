@@ -50,6 +50,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->created_at = new \DateTime();
+        $this->bookRentings = new ArrayCollection();
     }
 
     public function getLastName(): ?string
