@@ -3,6 +3,22 @@
 {% block title %}LocaLivres{% endblock %}
 
 {% block body %}
+        {% include '_components/nav.html.twig' %}
+        <h1>LocaLivres</h1>
+        <h2>Le site de location de livres en ligne</h2>
+        {% if app.user %}
+                <p>Bienvenue {{ app.user.userIdentifier }}</p>
+        {% else %}
+                <p>Connectez-vous ou créez un compte</p>
+        {% endif %}
+    </nav>
+    <div class="container">
+        {% if message is defined %}
+                <div class="alert alert-danger">
+                        {{ message }}
+                </div>
+        {% endif %}
+    </div>
     <div>
         <img src="{{ asset('build/images/books.jpg') }}" alt="books">
     </div>

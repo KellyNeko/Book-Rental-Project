@@ -1,0 +1,10 @@
+<nav class="navbar sticky-top navbar-light bg-light">
+    <a class="btn btn-sm btn-secondary" href="{{ path('app_book') }}">Accueil</a>
+    {% if app.user %}
+        <a class="btn btn-sm btn-info" href="{{ path('app_user_crud_edit', {'id': app.user.id}) }}">Modifier son profil</a>
+        <a class="btn btn-sm btn-danger" href="{{ path('app_logout') }}">Se déconnecter</a>
+    {% else %}
+        <a class="btn btn-sm btn-primary" href="{{ path('app_user_crud_new') }}">S'inscrire</a>
+        <a class="btn btn-sm btn-success" href="{{ path('app_login') }}">Se connecter</a>
+    {% endif %}
+</nav>
