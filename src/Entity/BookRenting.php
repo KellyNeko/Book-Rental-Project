@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\BookRentingRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\Date;
 
 #[ORM\Entity(repositoryClass: BookRentingRepository::class)]
 class BookRenting
@@ -34,6 +35,14 @@ class BookRenting
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function __construct()
+    {
+        $this->renting_start = new \DateTime(); 
+        $date_max = "1 month";
+        $this->limit_date = new \DateTime($date_max); 
+        $this->renting_end = new \DateTime($date_max); 
     }
 
     public function getUser(): ?User

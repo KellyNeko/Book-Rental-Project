@@ -6,5 +6,7 @@
     {% for book_category in book_categories %} 
         <p>{{book_category.category.label}}</p>
     {% endfor %}
+    <p>Voulez-vous louer ce livre ?</p>
+    <a href="{{ path('book_rent', {'id': book.id}) }}" class="btn btn-outline-success">Louer</a>
     <a href="{{ path('book_list') }}">Retour</a>
 {% endblock %}

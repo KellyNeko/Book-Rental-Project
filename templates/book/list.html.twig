@@ -17,21 +17,21 @@
         </thead>
         <tbody>
             {% for book in books %}         
-                {# {% if app.user.id == todo.idUser%} #}
-                <tr>
-                    <td>{{book.id}}</td>
-                    <td>
-                        <a href="{{ path('book_show', {'id': book.id}) }}" class="btn btn-outline-secondary">{{book.reference}}</a>
-                    </td>
-                    <td>
-                        <a href="{{ path('book_show', {'id': book.id}) }}" class="btn btn-outline-secondary">{{book.author.lastname ~" "~ book.author.firstname}}</a>
-                    </td>
-                    <td>
-                        <a href="{{ path('book_show', {'id': book.id}) }}" class="btn btn-outline-info">Voir</a>
-                        <a class="btn btn-outline-success">Louer</a>
-                    </td>
-                </tr>
-                {# {% endif %} #}
+                {% if book.bookRentings is empty %}
+                    <tr>
+                        <td>{{book.id}}</td>
+                        <td>
+                            <a href="{{ path('book_show', {'id': book.id}) }}" class="btn btn-outline-secondary">{{book.reference}}</a>
+                        </td>
+                        <td>
+                            <a href="{{ path('book_show', {'id': book.id}) }}" class="btn btn-outline-secondary">{{book.author.lastname ~" "~ book.author.firstname}}</a>
+                        </td>
+                        <td>
+                            <a href="{{ path('book_show', {'id': book.id}) }}" class="btn btn-outline-info">Voir</a>
+                            <a href="{{ path('book_user_rent', {'id': book.id}) }}" class="btn btn-outline-success">Louer</a>
+                        </td>
+                    </tr>
+                {% endif %}
             {% endfor %}
     </table>
     {% else %}

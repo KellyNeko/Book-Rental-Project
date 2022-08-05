@@ -39,6 +39,22 @@ class BookRentingRepository extends ServiceEntityRepository
         }
     }
 
+    public function deleteOldBookRenting()
+    {
+        $current_date = new \DateTime();
+
+        $qb = $this->createQueryBuilder('cc')
+             ->where('cc.renting_end < :current_date')
+             ->setParameter('current_date', $current_date);
+
+         $oldBookRentings = $qb->getQuery()->getResult();
+         dump($oldBookRentings);
+        foreach ($oldBookRentings as $oldBookRenting) {
+            $this->getEntityManager()->remove($oldBookRenting);
+        }
+        $this->getEntityManager()->flush();
+    }
+
 //    /**
 //     * @return BookRenting[] Returns an array of BookRenting objects
 //     */

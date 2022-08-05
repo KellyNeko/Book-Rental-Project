@@ -39,6 +39,46 @@ class BookRepository extends ServiceEntityRepository
         }
     }
 
+//     public function findById($id): array
+//    {
+//        return $this->createQueryBuilder('b')
+//            ->andWhere('b.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->orderBy('b.id', 'ASC')
+//            ->setMaxResults(10)
+//            ->getQuery()
+//            ->getResult()
+//        ;
+//    }
+
+    public function isBookRented(int $bookId): ?Book
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT p, c
+            FROM App\Entity\Book p
+            INNER JOIN p.category c
+            WHERE p.id = :id'
+        )->setParameter('id', $bookId);
+
+        return $query->getOneOrNullResult();
+    }
+
+    public function findBookCategory(int $bookId): ?Book
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT p, c
+            FROM App\Entity\Book p
+            INNER JOIN p.bookCategory c
+            WHERE p.id = :id'
+        )->setParameter('id', $bookId);
+
+        return $query->getOneOrNullResult();
+    }
+
 //    /**
 //     * @return Book[] Returns an array of Book objects
 //     */
