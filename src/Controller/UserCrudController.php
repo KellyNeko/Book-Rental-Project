@@ -10,6 +10,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\PersistentCollection;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 #[Route('/user/crud')]
 class UserCrudController extends AbstractController
@@ -30,9 +33,19 @@ class UserCrudController extends AbstractController
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
         
-        if ($form->isSubmitted() && $form->isValid()) {
-            $plaintextPassword = $user->getPassword();
+        // Get all free books from DB
+        $user_list = $userRepository->findAll();
+        $userExist = false;
 
+        foreach ($user_list as $selected_user) {
+            if($selected_user->getLastName() == $user->getLastName()) {
+                $userExist = true;
+                throw $this->createNotFoundException('The user already exists :/');
+            }
+        }
+
+        if ($form->isSubmitted() && $form->isValid() && $userExist == false) {
+            $plaintextPassword = $user->getPassword();
             // hash the password (based on the security.yaml config for the $user class)
             $hashedPassword = $passwordHasher->hashPassword(
                 $user,
@@ -96,7 +109,6 @@ class UserCrudController extends AbstractController
             $userRepository->remove($user, true);
         }
 
-        $this->redirect($this->generateUrl('app_logout'));
         return $this->redirectToRoute('app_book', [], Response::HTTP_SEE_OTHER);
     }
 }

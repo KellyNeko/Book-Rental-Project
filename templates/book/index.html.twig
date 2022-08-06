@@ -8,7 +8,7 @@
         <h1>LocaLivres</h1>
         <h2>Le site de location de livres en ligne</h2>
         {% if app.user %}
-                <p>Bienvenue {{ app.user.userIdentifier }}</p>
+                <p>Bienvenue {{ app.user.firstName }}</p>
         {% else %}
                 <p>Connectez-vous ou créez un compte</p>
         {% endif %}
