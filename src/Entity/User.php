@@ -47,6 +47,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: BookRenting::class)]
     private Collection $bookRentings;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: BookRenting::class, orphanRemoval: true)]
+    private Collection $bookRenting;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -56,6 +59,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->created_at = new \DateTime();
         $this->bookRentings = new ArrayCollection();
+        $this->bookRenting = new ArrayCollection();
     }
 
     public function getLastName(): ?string
@@ -187,5 +191,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, BookRenting>
+     */
+    public function getBookRenting(): Collection
+    {
+        return $this->bookRenting;
     }
 }

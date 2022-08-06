@@ -96,6 +96,7 @@ class UserCrudController extends AbstractController
             $userRepository->remove($user, true);
         }
 
+        $this->redirect($this->generateUrl('app_logout'));
         return $this->redirectToRoute('app_book', [], Response::HTTP_SEE_OTHER);
     }
 }

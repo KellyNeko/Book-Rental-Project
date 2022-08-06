@@ -16,12 +16,12 @@ class BookRenting
     #[ORM\Column]
     private ?int $id = null;
 
-    //The user who's renting the book
+    // The user who's renting the book
     #[ORM\ManyToOne(inversedBy: 'bookRentings')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    //The rened book
+    //The rented book
     #[ORM\ManyToOne(inversedBy: 'bookRentings')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Book $book = null;
