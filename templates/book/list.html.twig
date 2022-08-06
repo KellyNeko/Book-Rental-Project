@@ -1,39 +1,51 @@
 {% extends 'base.html.twig' %}
 
+{# List of books to rent (that are not already rented) #}
 {% block title %}Livres à louer !{% endblock %}
 
 {% block body %}
     {% include '_components/nav.html.twig' %}
     <h1 class="">Liste des livres à louer</h1>
     {% if app.user%}
-    <table class="table table-striped table-bordered table-hover">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col" width="1%">#</th>
-                <th scope="col">Référence</th>
-                <th scope="col" width="15%" class="text-center">Auteur</th>
-                <th scope="col" width="15%" class="text-center">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for book in books %}         
-                {# {% if app.user.id == todo.idUser%} #}
+        <table class="table table-striped table-bordered table-hover">
+            <thead class="thead-dark">
                 <tr>
-                    <td>{{book.id}}</td>
-                    <td>
-                        <a href="{{ path('book_show', {'id': book.id}) }}" class="btn btn-outline-secondary">{{book.reference}}</a>
-                    </td>
-                    <td>
-                        <a href="{{ path('book_show', {'id': book.id}) }}" class="btn btn-outline-secondary">{{book.author.lastname ~" "~ book.author.firstname}}</a>
-                    </td>
-                    <td>
-                        <a href="{{ path('book_show', {'id': book.id}) }}" class="btn btn-outline-info">Voir</a>
-                        <a class="btn btn-outline-success">Louer</a>
-                    </td>
+                    <th scope="col" width="1%">#</th>
+                    <th scope="col">Référence</th>
+                    <th scope="col" width="15%" class="text-center">Auteur</th>
+                    <th scope="col" width="15%" class="text-center">Actions</th>
                 </tr>
-                {# {% endif %} #}
-            {% endfor %}
-    </table>
+            </thead>
+            <tbody>
+                {# Loop in the books #}
+                {% for book in books %}         
+                    {% set isRented = false %}
+                    {% for bookRent in book.bookRentings %} 
+                        {# Check if there's a null renting_end (the book is already rented) #}
+                        {% if bookRent.rentingEnd == null %}
+                            {% set isRented = true %}
+                        {% else %} 
+                            {% set isRented = false %}
+                        {% endif %} 
+                    {% endfor %}
+                    {# Diplay the not rented books #}
+                    {% if isRented == false %}
+                        <tr>
+                            <td>{{book.id}}</td>
+                            <td>
+                                <a href="{{ path('book_show', {'id': book.id}) }}" class="btn btn-outline-secondary">{{book.reference}}</a>
+                            </td>
+                            <td>
+                                <a href="{{ path('book_show', {'id': book.id}) }}" class="btn btn-outline-secondary">{{book.author.lastname ~" "~ book.author.firstname}}</a>
+                            </td>
+                            <td>
+                                <a href="{{ path('book_show', {'id': book.id}) }}" class="btn btn-outline-info">Voir</a>
+                                <a href="{{ path('book_user_rent', {'id': book.id}) }}" class="btn btn-outline-success">Louer</a>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+        </table>
     {% else %}
         <h2>Vous n'êtes pas connecté</h2>
     {% endif %}

@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
+//Form of creation/modification of a user
 class UserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

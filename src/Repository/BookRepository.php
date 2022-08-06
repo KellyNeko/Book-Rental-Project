@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Book;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,6 +17,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BookRepository extends ServiceEntityRepository
 {
+    private $bookRenting;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Book::class);
@@ -39,28 +42,30 @@ class BookRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Book[] Returns an array of Book objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('b.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    //Get all the rented books
+    public function findAllUserBooks(): array
+    {
+        //Find books where there's no renting_end (books are rented)
+        $qb = $this->createQueryBuilder('b')
+            ->leftJoin('b.bookRentings', 'r')
+            ->where('r.renting_end is NULL')
+            ->orderBy('r.id', 'DESC');
 
-//    public function findOneBySomeField($value): ?Book
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        $query = $qb->getQuery();
+
+        return $query->execute();
+    }
+
+    //Get all not rented books
+    public function findAllFree(): array
+    {
+        //Find books where there's a renting_end (books are not rented)
+        $qb = $this->createQueryBuilder('b')
+            ->leftJoin('b.bookRentings', 'r')
+            ->where('r.renting_end is not NULL or r is NULL');
+
+        $query = $qb->getQuery();
+
+        return $query->execute();
+    }
 }

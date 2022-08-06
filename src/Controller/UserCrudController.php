@@ -23,6 +23,7 @@ class UserCrudController extends AbstractController
     }
 
     #[Route('/new', name: 'app_user_crud_new', methods: ['GET', 'POST'])]
+    //To Sign Up -> Create new user
     public function new(Request $request, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = new User();
@@ -51,6 +52,7 @@ class UserCrudController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_crud_show', methods: ['GET'])]
+    //Show all the selected user's details
     public function show(User $user): Response
     {
         return $this->render('user_crud/show.html.twig', [
@@ -59,6 +61,7 @@ class UserCrudController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_user_crud_edit', methods: ['GET', 'POST'])]
+    //Edit the user's details
     public function edit(Request $request, User $user, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
         $form = $this->createForm(UserType::class, $user);
@@ -86,6 +89,7 @@ class UserCrudController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_crud_delete', methods: ['POST'])]
+    //Delete the user
     public function delete(Request $request, User $user, UserRepository $userRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+//Entity for Book authors
 #[ORM\Entity(repositoryClass: AuthorRepository::class)]
 class Author
 {
@@ -15,12 +16,15 @@ class Author
     #[ORM\Column]
     private ?int $id = null;
 
+    //Author's lastname
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $last_name = null;
 
+    //Author's firstname
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $first_name = null;
 
+    //Books written by this author
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Book::class)]
     private Collection $books;
 

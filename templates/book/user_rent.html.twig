@@ -1,11 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{# Show details of a selected book #}
+{# Show details of a selected book to be rented #}
 {% block body %}
     <h1>{{book.reference}}</h1>
     <p>{{book.author.lastname ~" "~ book.author.firstname}}</p>
     {% for book_category in book_categories %} 
         <p>{{book_category.category.label}}</p>
     {% endfor %}
+    <p>Voulez-vous louer ce livre ?</p>
+    <a href="{{ path('book_rent', {'id': book.id}) }}" class="btn btn-outline-success">Louer</a>
     <a href="{{ path('book_list') }}">Retour</a>
 {% endblock %}

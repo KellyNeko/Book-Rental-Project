@@ -39,28 +39,24 @@ class BookRentingRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return BookRenting[] Returns an array of BookRenting objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('b.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    //Get all books that are rented for more than a month 
+    public function returnOldBookRenting()
+    {
+        $current_date = new \DateTime();
 
-//    public function findOneBySomeField($value): ?BookRenting
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        //Get books where limit_date < to the current date
+        $qb = $this->createQueryBuilder('cc')
+             ->where('cc.limit_date < :current_date')
+             ->setParameter('current_date', $current_date);
+
+         $oldBookRentings = $qb->getQuery()->getResult();
+         $entityManager = $this->getEntityManager();
+
+        //Set the renting_end (return) all the old books
+        foreach ($oldBookRentings as $oldBookRenting) {
+            $oldBookRenting->setRentingEnd(new \DateTime());
+            $entityManager->persist($oldBookRenting);
+        }
+        $entityManager->flush();
+    }
 }

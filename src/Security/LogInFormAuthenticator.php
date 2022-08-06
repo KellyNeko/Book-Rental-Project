@@ -25,6 +25,7 @@ class LogInFormAuthenticator extends AbstractLoginFormAuthenticator
     {
     }
 
+    //Authentication of a user, using the lastname and th password
     public function authenticate(Request $request): Passport
     {
         $lastName = $request->request->get('last_name', '');
@@ -40,13 +41,12 @@ class LogInFormAuthenticator extends AbstractLoginFormAuthenticator
         );
     }
 
+    //If authentication succeeded, redirect to the main page
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
-
-        // For example:
         return new RedirectResponse($this->urlGenerator->generate('app_book'));
     }
 

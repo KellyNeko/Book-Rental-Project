@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+//A book
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 class Book
 {
@@ -15,15 +16,19 @@ class Book
     #[ORM\Column]
     private ?int $id = null;
 
+    //Book's name
     #[ORM\Column(length: 255)]
     private ?string $reference = null;
 
+    //Rentings of the book
     #[ORM\OneToMany(mappedBy: 'book', targetEntity: BookRenting::class)]
     private Collection $bookRentings;
 
+    //Categories of the book
     #[ORM\OneToMany(mappedBy: 'book', targetEntity: BookCategory::class)]
     private Collection $bookCategories;
 
+    //Author of the book
     #[ORM\ManyToOne(inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Author $author = null;
