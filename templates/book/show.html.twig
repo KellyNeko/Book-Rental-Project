@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 
+{# Show details of a selected book #}
 {% block body %}
     <h1>{{book.reference}}</h1>
     <p>{{book.author.lastname ~" "~ book.author.firstname}}</p>

@@ -39,44 +39,24 @@ class BookRentingRepository extends ServiceEntityRepository
         }
     }
 
-    public function deleteOldBookRenting()
+    //Get all books that are rented for more than a month 
+    public function returnOldBookRenting()
     {
         $current_date = new \DateTime();
 
+        //Get books where limit_date < to the current date
         $qb = $this->createQueryBuilder('cc')
-             ->where('cc.renting_end < :current_date')
+             ->where('cc.limit_date < :current_date')
              ->setParameter('current_date', $current_date);
 
          $oldBookRentings = $qb->getQuery()->getResult();
-         dump($oldBookRentings);
+         $entityManager = $this->getEntityManager();
+
+        //Set the renting_end (return) all the old books
         foreach ($oldBookRentings as $oldBookRenting) {
-            $this->getEntityManager()->remove($oldBookRenting);
+            $oldBookRenting->setRentingEnd(new \DateTime());
+            $entityManager->persist($oldBookRenting);
         }
-        $this->getEntityManager()->flush();
+        $entityManager->flush();
     }
-
-//    /**
-//     * @return BookRenting[] Returns an array of BookRenting objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('b.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?BookRenting
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

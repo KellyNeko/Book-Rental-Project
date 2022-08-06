@@ -2,6 +2,7 @@
 
 {% block title %}Mes Livres{% endblock %}
 
+{# Show all books rented by the connected user #}
 {% block body %}
     {% include '_components/nav.html.twig' %}
     <h1 class="">Mes Livres</h1>
@@ -16,30 +17,31 @@
             </tr>
         </thead>
         <tbody>
+            {# Loop in the rented books #}
             {% for book in books %}         
-                {% if book.bookRentings is not empty %}
-                    {% set isMyBook = false %}
-                    {% for bookRent in book.bookRentings %} 
-                        {% if app.user.id == bookRent.user.id %}
-                            {% set isMyBook = true %}
-                        {% else %} 
-                            {% set isMyBook = false %}
-                        {% endif %} 
-                    {% endfor %}
-                    {% if isMyBook == true %}
-                        <tr>
-                            <td>{{book.id}}</td>
-                            <td>
-                                <a href="{{ path('book_show', {'id': book.id}) }}" class="btn btn-outline-secondary">{{book.reference}}</a>
-                            </td>
-                            <td>
-                                <a href="{{ path('book_show', {'id': book.id}) }}" class="btn btn-outline-secondary">{{book.author.lastname ~" "~ book.author.firstname}}</a>
-                            </td>
-                            <td>
-                                <a href="{{ path('user_book_return', {'id': book.id}) }}" class="btn btn-outline-danger">Rendre</a>
-                            </td>
-                        </tr>
-                    {% endif %}
+                {% set isMyBook = false %}
+                {% for bookRent in book.bookRentings %} 
+                    {# Check if the rented book is rented by the connected user #}
+                    {% if app.user.id == bookRent.user.id %}
+                        {% set isMyBook = true %}
+                    {% else %} 
+                        {% set isMyBook = false %}
+                    {% endif %} 
+                {% endfor %}
+                {# Diplay the user's books #}
+                {% if isMyBook == true %}
+                    <tr>
+                        <td>{{book.id}}</td>
+                        <td>
+                            <a href="{{ path('book_show', {'id': book.id}) }}" class="btn btn-outline-secondary">{{book.reference}}</a>
+                        </td>
+                        <td>
+                            <a href="{{ path('book_show', {'id': book.id}) }}" class="btn btn-outline-secondary">{{book.author.lastname ~" "~ book.author.firstname}}</a>
+                        </td>
+                        <td>
+                            <a href="{{ path('user_book_return', {'id': book.id}) }}" class="btn btn-outline-danger">Rendre</a>
+                        </td>
+                    </tr>
                 {% endif %}
             {% endfor %}
     </table>

@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+//A user of the application
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -18,15 +19,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    //The lastname of the user
     #[ORM\Column(length: 180, unique: true)]
     private ?string $last_name = null;
 
+    //The firstname of the user
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $first_name = null;
 
+    //The date of the user's creation
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
 
+    //The user's phone number
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $phone = null;
 

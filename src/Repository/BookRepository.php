@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Book;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,6 +17,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BookRepository extends ServiceEntityRepository
 {
+    private $bookRenting;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Book::class);
@@ -39,68 +42,30 @@ class BookRepository extends ServiceEntityRepository
         }
     }
 
-//     public function findById($id): array
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('b.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-    public function isBookRented(int $bookId): ?Book
+    //Get all the rented books
+    public function findAllUserBooks(): array
     {
-        $entityManager = $this->getEntityManager();
+        //Find books where there's no renting_end (books are rented)
+        $qb = $this->createQueryBuilder('b')
+            ->leftJoin('b.bookRentings', 'r')
+            ->where('r.renting_end is NULL')
+            ->orderBy('r.id', 'DESC');
 
-        $query = $entityManager->createQuery(
-            'SELECT p, c
-            FROM App\Entity\Book p
-            INNER JOIN p.category c
-            WHERE p.id = :id'
-        )->setParameter('id', $bookId);
+        $query = $qb->getQuery();
 
-        return $query->getOneOrNullResult();
+        return $query->execute();
     }
 
-    public function findBookCategory(int $bookId): ?Book
+    //Get all not rented books
+    public function findAllFree(): array
     {
-        $entityManager = $this->getEntityManager();
+        //Find books where there's a renting_end (books are not rented)
+        $qb = $this->createQueryBuilder('b')
+            ->leftJoin('b.bookRentings', 'r')
+            ->where('r.renting_end is not NULL or r is NULL');
 
-        $query = $entityManager->createQuery(
-            'SELECT p, c
-            FROM App\Entity\Book p
-            INNER JOIN p.bookCategory c
-            WHERE p.id = :id'
-        )->setParameter('id', $bookId);
+        $query = $qb->getQuery();
 
-        return $query->getOneOrNullResult();
+        return $query->execute();
     }
-
-//    /**
-//     * @return Book[] Returns an array of Book objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('b.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Book
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

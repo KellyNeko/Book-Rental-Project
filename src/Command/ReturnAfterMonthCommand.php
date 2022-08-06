@@ -9,8 +9,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use App\Repository\BookRentingRepository;
 
-#[AsCommand(name: 'app:delete-old-book-rent')]
-class DeleteAfterMonthCommand extends Command
+#[AsCommand(name: 'app:return-old-book-rent')]
+class ReturnAfterMonthCommand extends Command
 {
     private $book_renting_repository;
 
@@ -26,16 +26,16 @@ class DeleteAfterMonthCommand extends Command
     {
         $this
             // the name of the command (the part after "bin/console")
-            ->setDescription('Delete old book renting after a month of being rented')
-            ->setHelp('This command delete old book renting after a month of being rented')
+            ->setDescription('Return every old books after a month of being rented')
+            ->setHelp('This command returns every old books after a month of being rented')
             ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln('Begin deleting old book renting');
-        $this->book_renting_repository->deleteOldBookRenting();
-        $output->writeln('Deleting old  book renting');
+        $output->writeln('Begin returning old books');
+        $this->book_renting_repository->returnOldBookRenting();
+        $output->writeln('Returning old books');
 
         return 1;
     }

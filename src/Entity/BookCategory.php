@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\BookCategoryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+//A Category of a book (link between Book and Category)
 #[ORM\Entity(repositoryClass: BookCategoryRepository::class)]
 class BookCategory
 {
@@ -13,9 +14,11 @@ class BookCategory
     #[ORM\Column]
     private ?int $id = null;
 
+    //A Category
     #[ORM\ManyToOne(inversedBy: 'bookCategories')]
     private ?Category $category = null;
 
+    //A Book
     #[ORM\ManyToOne(inversedBy: 'bookCategories')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Book $book = null;

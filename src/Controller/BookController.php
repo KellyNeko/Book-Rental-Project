@@ -21,22 +21,22 @@ class BookController extends AbstractController
     /**
 	 * @Route("/", name="app_book")
 	 */
+    // Return main page
     public function index()
     {
-        // Call main page
         return $this->render('book/index.html.twig', [
             'controller_name' => 'BookController',
         ]);
     }
     
-    //Function calling command for deleting books that are not rented anymore
+    //Call the command to return books that are rented for more than a month
     public function deleteOldRent(KernelInterface $kernel): Response
     {
         $application = new Application($kernel);
         $application->setAutoExit(false);
 
         $input = new ArrayInput([
-            'command' => 'app:delete-old-book-rent',
+            'command' => 'app:return-old-book-rent',
         ]);
 
         $output = new NullOutput();
@@ -48,13 +48,14 @@ class BookController extends AbstractController
     /**
 	 * @Route("/book/list", name="book_list")
 	 */
+    //List all not rented books
     public function list(ManagerRegistry $doctrine): Response
     {
-        // Get all books from DB
+        // Get all free books from DB
         $repository = $doctrine->getRepository(Book::class);
-        $books = $repository->findAll();
+        $books = $repository->findAllFree();
 
-        // Call Layout for list of books
+        // Return layout for list of free books (not rented)
         return $this->render('book/list.html.twig', [
             'books' => $books
         ]);
@@ -63,14 +64,18 @@ class BookController extends AbstractController
     /**
      * @Route("book/{id}/show", name="book_show")
      */
+    //Show details of the book selected by the user
     public function show($id, ManagerRegistry $doctrine): Response
     {
+        //Get the selected book
         $book_show = $doctrine
             ->getRepository(Book::class)
             ->find($id);
 
+        //Get the categories of the selected book
         $book_categories = $book_show->getBookCategories();
 
+        //Return the layout of the book's details
         return $this->render('book/show.html.twig', [
             'book' => $book_show,
             'book_categories' => $book_categories
@@ -80,13 +85,14 @@ class BookController extends AbstractController
     /**
 	 * @Route("/book/user/list", name="user_book_list")
 	 */
+    //List the books rented by the connected user
     public function userBookList(ManagerRegistry $doctrine): Response
     {
-        // Get all books from DB
+        // Get all rented books from DB
         $repository = $doctrine->getRepository(Book::class);
-        $books = $repository->findAll();
+        $books = $repository->findAllUserBooks();
 
-        // Call Layout for list of user's books
+        // Return the layout of the user's books
         return $this->render('book/user_book_list.html.twig', [
             'books' => $books
         ]);
@@ -95,14 +101,18 @@ class BookController extends AbstractController
     /**
 	 * @Route("/book/user/{id}/return", name="user_book_return")
 	 */
+    //Show the book to be returned by the user
     public function userBookReturn($id, ManagerRegistry $doctrine): Response
     {
+        //Get the selected book
         $book_show = $doctrine
             ->getRepository(Book::class)
             ->find($id);
 
+        //Get the categories of the selected book
         $book_categories = $book_show->getBookCategories();
 
+        //Return the layout of the book's details
         return $this->render('book/user_book_return.html.twig', [
             'book' => $book_show,
             'book_categories' => $book_categories
@@ -114,18 +124,22 @@ class BookController extends AbstractController
      */
     public function bookReturn($id, ManagerRegistry $doctrine): Response
     {
+        //Get the selected book
         $book = $doctrine
             ->getRepository(Book::class)
             ->find($id);
 
-        $book_rent_delete = $book->getBookRentings();
+        $book_renting = $book->getBookRentings();
         $entityManager = $doctrine->getManager();
 
-        foreach ($book_rent_delete as $book_rent_del) {
-            $entityManager->remove($book_rent_del);
+        //Set the renting_end to the current date, the book is now returned
+        foreach ($book_renting as $book_rent) {
+            $book_rent->setRentingEnd(new \DateTime());
+            $entityManager->persist($book_rent);
         }
         $entityManager->flush();
 
+        //Redirect to the user's book list
         return $this->redirectToRoute('user_book_list');
     }
 
@@ -134,12 +148,15 @@ class BookController extends AbstractController
      */
     public function userRent($id, ManagerRegistry $doctrine): Response
     {
+        //Get the selected book
         $book_show = $doctrine
             ->getRepository(Book::class)
             ->find($id);
 
+        //Get the categories of the selected book
         $book_categories = $book_show->getBookCategories();
 
+        //Return the layout of the book's details to rent
         return $this->render('book/user_rent.html.twig', [
             'book' => $book_show,
             'book_categories' => $book_categories
@@ -151,15 +168,14 @@ class BookController extends AbstractController
      */
     public function rent($id, ManagerRegistry $doctrine): Response
     {
+        //Create a new book renting
         $entityManager = $doctrine->getManager();
         $book_rent = new BookRenting();
         $book_rent->setUser($this->getUser());
         $book_rent->setBook($entityManager->getRepository(Book::class)->find($id));
 
-        // tell Doctrine you want to (eventually) save the Product (no queries yet)
+        //Persist the new book rent in the db
         $entityManager->persist($book_rent);
-
-        // actually executes the queries (i.e. the INSERT query)
         $entityManager->flush();
 
         return $this->redirectToRoute('book_list');

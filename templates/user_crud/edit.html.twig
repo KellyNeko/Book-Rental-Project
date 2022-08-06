@@ -2,11 +2,13 @@
 
 {% block title %}Modifier son Profil{% endblock %}
 
+{# Display of the user editing form #}
 {% block body %}
+        {% include '_components/nav.html.twig' %}
     <h1>Modifier son Profil</h1>
 
         {{ form_start(form) }}
-        {# use bootstrap for layout #}
+        {# using bootstrap for layout #}
                 <div class="row">
                         <div class="col-12">
                                 <label for="last-name-label">Nom de famille</label>
