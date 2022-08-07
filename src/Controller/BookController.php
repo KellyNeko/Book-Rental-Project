@@ -97,7 +97,8 @@ class BookController extends AbstractController
     {
         // Get all rented books from DB
         $repository = $doctrine->getRepository(Book::class);
-        $books = $repository->findAllUserBooks();
+        $user = $this->getUser();
+        $books = $repository->findAllUserBooks($user);
 
         $books = $paginator->paginate(
             $books, /* query NOT result */
