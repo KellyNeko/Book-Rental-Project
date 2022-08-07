@@ -45,6 +45,7 @@
                 {% endif %}
             {% endfor %}
     </table>
+    <div class="paginate-pages">{{ knp_pagination_render(books) }}</div>
     {% else %}
         <h2>Vous n'êtes pas connecté</h2>
     {% endif %}

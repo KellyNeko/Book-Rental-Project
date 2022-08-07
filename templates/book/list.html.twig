@@ -25,6 +25,7 @@
                         {% if bookRent.rentingEnd == null %}
                             {% set isRented = true %}
                         {% else %} 
+
                             {% set isRented = false %}
                         {% endif %} 
                     {% endfor %}
@@ -46,6 +47,7 @@
                     {% endif %}
                 {% endfor %}
         </table>
+        <div class="paginate-pages">{{ knp_pagination_render(books) }}</div>
     {% else %}
         <h2>Vous n'êtes pas connecté</h2>
     {% endif %}
