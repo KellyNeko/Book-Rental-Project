@@ -6,21 +6,24 @@
 {% block body %}
         {% include '_components/nav.html.twig' %}
         <h1>LocaLivres</h1>
-        <h2>Le site de location de livres en ligne</h2>
-        {% if app.user %}
-                <p>Bienvenue {{ app.user.firstName }}</p>
-        {% else %}
-                <p>Connectez-vous ou créez un compte</p>
-        {% endif %}
-    </nav>
-    <div class="container">
-        {% if message is defined %}
-                <div class="alert alert-danger">
-                        {{ message }}
+        <img src="{{ asset('build/images/library.jpg') }}" alt="book" class="background-image">
+        <div class="pres-container">
+                <h2>Le site de location de livres en ligne</h2>
+                {% if app.user %}
+                        <span>Bienvenue {{ app.user.firstName }}</span>
+                {% else %}
+                        <span>Connectez-vous ou créez un compte</span>
+                        <div class="text-center">
+                                <a href="{{ path('app_login') }}" class="btn btn-outline-success">Se Connecter</a>
+                                <a href="{{ path('app_user_crud_new') }}}" class="btn btn-outline-primary">S'inscrire</a>
+                        </div>
+                {% endif %}
+                <div class="container">
+                        {% if message is defined %}
+                                <div class="alert alert-danger">
+                                        {{ message }}
+                                </div>
+                        {% endif %}
                 </div>
-        {% endif %}
-    </div>
-    <div>
-        <img src="{{ asset('build/images/books.jpg') }}" alt="books">
-    </div>
+        </div>
 {% endblock %}

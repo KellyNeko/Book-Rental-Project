@@ -42,13 +42,14 @@ class BookRepository extends ServiceEntityRepository
         }
     }
 
-    //Get all the rented books
-    public function findAllUserBooks(): array
+    //Get all the books rented by the user
+    public function findAllUserBooks(User $user): array
     {
         //Find books where there's no renting_end (books are rented)
         $qb = $this->createQueryBuilder('b')
-            ->leftJoin('b.bookRentings', 'r')
-            ->where('r.renting_end is NULL')
+            ->innerJoin('b.bookRentings', 'r')
+            ->where('r.renting_end is NULL AND r.user = :user')
+            ->setParameter('user', $user)
             ->orderBy('r.id', 'DESC');
 
         $query = $qb->getQuery();

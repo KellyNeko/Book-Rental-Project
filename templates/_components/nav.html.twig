@@ -1,13 +1,18 @@
 {# Navigation bar #}
-<nav class="navbar sticky-top navbar-light bg-light">
-    <a class="btn btn-sm btn-secondary" href="{{ path('app_book') }}">Accueil</a>
-    {% if app.user %}
-        <a class="btn btn-sm btn-success" href="{{ path('book_list') }}">Livres disponibles</a>
-        <a class="btn btn-sm btn-dark" href="{{ path('user_book_list') }}">Mes Livres</a>
-        <a class="btn btn-sm btn-info" href="{{ path('app_user_crud_edit', {'id': app.user.id}) }}">Modifier son profil</a>
-        <a class="btn btn-sm btn-danger" href="{{ path('app_logout') }}">Se déconnecter</a>
-    {% else %}
-        <a class="btn btn-sm btn-primary" href="{{ path('app_user_crud_new') }}">S'inscrire</a>
-        <a class="btn btn-sm btn-success" href="{{ path('app_login') }}">Se connecter</a>
-    {% endif %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">LocaLivres</a>
+    <div class="collapse navbar-collapse">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link home-link" href="{{ path('app_book') }}">Accueil</a>
+            {% if app.user %}
+                <a class="nav-item nav-link free-books-link" href="{{ path('book_list') }}">Livres disponibles</a>
+                <a class="nav-item nav-link my-books-link" href="{{ path('user_book_list') }}">Mes Livres</a>
+                <a class="nav-item nav-link edit-user-link" href="{{ path('app_user_crud_edit', {'id': app.user.id}) }}">Modifier son profil</a>
+                <a class="nav-item nav-link disconnect-link" href="{{ path('app_logout') }}">Se déconnecter</a>
+            {% else %}
+                <a class="nav-item nav-link sign-up-link" href="{{ path('app_user_crud_new') }}">S'inscrire</a>
+                <a class="nav-item nav-link connect-link" href="{{ path('app_login') }}">Se connecter</a>
+            {% endif %}
+        </div>
+    </div>
 </nav>

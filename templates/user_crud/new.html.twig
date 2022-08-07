@@ -4,31 +4,29 @@
 
 {# Display of the user creation form #}
 {% block body %}
+    {% include '_components/nav.html.twig' %}
     <h1>Créez votre compte</h1>
-
-    {{ form_start(form) }}
-    {# use bootstrap for layout #}
-            <div class="row">
-                    <div class="col-12">
-                        <label for="last-name-label">Nom de famille</label>
-                        {{ form_widget(form.last_name) }}
-                    </div>
-                    <div class="col-12">
-                        <label for="last-name-label">Prénom</label>
-                        {{ form_widget(form.first_name) }}
-                    </div>
-                    <div class="col-12">
-                        <label for="last-name-label">Numéro de téléphone</label>
-                        {{ form_widget(form.phone) }}
-                    </div>
-                    <div class="col-12">
-                        <label for="paswd-label">Mot de passe</label>
-                        {{ form_widget(form.password) }}
-                    </div>
+    <div class="text-center">
+        {{ form_start(form) }}
+        {# use bootstrap for layout #}
+            <div class="form-group">
+                <label for="last-name-label">Nom de famille</label>
+                {{ form_widget(form.last_name, {'attr': {'placeholder': 'MARTIN'}}) }}
             </div>
-            <button class="btn btn-success">Sauvegarder</button>
-    {{ form_end(form) }}
-
-    <a href="{{ path('app_book') }}">Retour</a>
-
+            <div class="form-group">
+                <label for="last-name-label">Prénom</label>
+                {{ form_widget(form.first_name, {'attr': {'placeholder': 'Martine'}}) }}
+            </div>
+            <div class="form-group">
+                <label for="last-name-label">Numéro de téléphone</label>
+                {{ form_widget(form.phone, {'attr': {'placeholder': 'ex: 06 08...'}}) }}
+            </div>
+            <div class="form-group">
+                <label for="paswd-label">Mot de passe</label>
+                {{ form_widget(form.password, {'attr': {'placeholder': '***'}}) }}
+            </div>
+            <button class="btn btn-lg btn-success connect-button">Sauvegarder</button>
+        {{ form_end(form) }}
+        <a class="btn btn-outline-danger connect-button" href="{{ path('app_book') }}">Retour à la page d'accueil</a>
+    </div>
 {% endblock %}

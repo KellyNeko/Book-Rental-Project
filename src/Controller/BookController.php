@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Knp\Component\Pager\PaginatorInterface;
 
 class BookController extends AbstractController
 {
@@ -49,11 +50,17 @@ class BookController extends AbstractController
 	 * @Route("/book/list", name="book_list")
 	 */
     //List all not rented books
-    public function list(ManagerRegistry $doctrine): Response
+    public function list(ManagerRegistry $doctrine, PaginatorInterface $paginator, Request $request): Response
     {
         // Get all free books from DB
         $repository = $doctrine->getRepository(Book::class);
         $books = $repository->findAllFree();
+
+        $books = $paginator->paginate(
+            $books, /* query NOT result */
+            $request->query->getInt('page', 1),
+            6
+        );
 
         // Return layout for list of free books (not rented)
         return $this->render('book/list.html.twig', [
@@ -86,11 +93,18 @@ class BookController extends AbstractController
 	 * @Route("/book/user/list", name="user_book_list")
 	 */
     //List the books rented by the connected user
-    public function userBookList(ManagerRegistry $doctrine): Response
+    public function userBookList(ManagerRegistry $doctrine, PaginatorInterface $paginator, Request $request): Response
     {
         // Get all rented books from DB
         $repository = $doctrine->getRepository(Book::class);
-        $books = $repository->findAllUserBooks();
+        $user = $this->getUser();
+        $books = $repository->findAllUserBooks($user);
+
+        $books = $paginator->paginate(
+            $books, /* query NOT result */
+            $request->query->getInt('page', 1),
+            6
+        );
 
         // Return the layout of the user's books
         return $this->render('book/user_book_list.html.twig', [
