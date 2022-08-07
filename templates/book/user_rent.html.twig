@@ -2,12 +2,15 @@
 
 {# Show details of a selected book to be rented #}
 {% block body %}
+    {% include '_components/nav.html.twig' %}
     <h1>{{book.reference}}</h1>
-    <p>{{book.author.lastname ~" "~ book.author.firstname}}</p>
+    <h2 class="text-center">De : {{book.author.firstname ~" "~ book.author.lastname}}</h2>
     {% for book_category in book_categories %} 
-        <p>{{book_category.category.label}}</p>
+        <h3 class="text-center blockquote-footer">{{book_category.category.label}}</h3>
     {% endfor %}
-    <p>Voulez-vous louer ce livre ?</p>
-    <a href="{{ path('book_rent', {'id': book.id}) }}" class="btn btn-outline-success">Louer</a>
-    <a href="{{ path('book_list') }}">Retour</a>
+    <div class="text-center">
+        <p>Voulez-vous louer ce livre ?</p>
+        <a href="{{ path('book_rent', {'id': book.id}) }}" class="btn btn-success">Louer</a>
+        <a href="{{ path('book_list') }}" class="btn btn-outline-danger">Retour à la liste</a>
+    </div>
 {% endblock %}

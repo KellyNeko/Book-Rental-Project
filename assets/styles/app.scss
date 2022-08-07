@@ -1,5 +1,68 @@
-$back-color: gray;
+$back-color: #fff;
 
 body {
     background-color: $back-color;
+}
+
+h1 {
+    text-align: center!important;
+    padding: 10px;
+    font-weight: bold;
+}
+
+h2 {
+    color: #a9a3a3;
+}
+
+.pres-container {
+    background-color: $back-color;
+    border: 1px solid black;
+    position: relative;
+    text-align: center;
+    margin: 10% 20% 10% 20%;
+    padding: 10px;
+    border: thick double black;
+}
+
+.background-image {
+    width: 100%;
+    opacity: 0.8;
+    position: absolute;
+}
+
+.table {
+    margin: 20px;
+    width: auto;
+}
+
+a.nav-item.nav-link.home-link:hover {
+    color: #d28b48da;
+}
+
+a.nav-item.nav-link.free-books-link:hover {
+    color: #48ced2da;
+}
+
+a.nav-item.nav-link.my-books-link:hover {
+    color: #a21a87da;
+}
+
+a.nav-item.nav-link.edit-user-link:hover {
+    color: #c8cd23da;
+}
+
+a.nav-item.nav-link.disconnect-link:hover {
+    color: #dc3232eb;
+}
+
+a.nav-item.nav-link.sign-up-link:hover {
+    color: #344aeeda;
+}
+
+a.nav-item.nav-link.connect-link:hover {
+    color: #41c230;
+}
+
+.login-form, .connect-button {
+    margin: 20px;
 }

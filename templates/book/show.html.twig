@@ -2,10 +2,13 @@
 
 {# Show details of a selected book #}
 {% block body %}
+    {% include '_components/nav.html.twig' %}
     <h1>{{book.reference}}</h1>
-    <p>{{book.author.lastname ~" "~ book.author.firstname}}</p>
+    <h2 class="text-center">De : {{book.author.firstname ~" "~ book.author.lastname}}</h2>
     {% for book_category in book_categories %} 
-        <p>{{book_category.category.label}}</p>
+        <h3 class="text-center blockquote-footer">{{book_category.category.label}}</h3>
     {% endfor %}
-    <a href="{{ path('book_list') }}">Retour</a>
+    <div class="text-center">
+        <a href="{{ path('book_list') }}" class="btn btn-outline-danger">Retour à la liste</a>
+    </div>
 {% endblock %}
