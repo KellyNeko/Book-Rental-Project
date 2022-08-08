@@ -13,10 +13,6 @@
                         <span>Bienvenue {{ app.user.firstName }}</span>
                 {% else %}
                         <span>Connectez-vous ou créez un compte</span>
-                        <div class="text-center">
-                                <a href="{{ path('app_login') }}" class="btn btn-outline-success">Se Connecter</a>
-                                <a href="{{ path('app_user_crud_new') }}}" class="btn btn-outline-primary">S'inscrire</a>
-                        </div>
                 {% endif %}
                 <div class="container">
                         {% if message is defined %}
