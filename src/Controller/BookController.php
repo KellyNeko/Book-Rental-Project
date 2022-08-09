@@ -6,19 +6,23 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Book;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Book;
 use App\Entity\BookRenting;
+use App\Entity\Author;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class BookController extends AbstractController
 {
+    public $findQuery = "";
     /**
 	 * @Route("/", name="app_book")
 	 */
@@ -56,15 +60,14 @@ class BookController extends AbstractController
         $repository = $doctrine->getRepository(Book::class);
         $books = $repository->findAllFree();
 
-        $books = $paginator->paginate(
-            $books, /* query NOT result */
-            $request->query->getInt('page', 1),
-            6
-        );
+        $books = $this->paginatePages($paginator, $request, $books);
+
+        $searchForm = $this->createSearchForm('book_handle_search');
 
         // Return layout for list of free books (not rented)
         return $this->render('book/list.html.twig', [
-            'books' => $books
+            'books' => $books,
+            'searchForm' => $searchForm->createView()
         ]);
     }
 
@@ -100,15 +103,14 @@ class BookController extends AbstractController
         $user = $this->getUser();
         $books = $repository->findAllUserBooks($user);
 
-        $books = $paginator->paginate(
-            $books, /* query NOT result */
-            $request->query->getInt('page', 1),
-            6
-        );
+        $books = $this->paginatePages($paginator, $request, $books);
+
+        $searchForm = $this->createSearchForm('user_book_handle_search');
 
         // Return the layout of the user's books
         return $this->render('book/user_book_list.html.twig', [
-            'books' => $books
+            'books' => $books,
+            'searchForm' => $searchForm->createView()
         ]);
     }
 
@@ -193,5 +195,77 @@ class BookController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('book_list');
+    }
+
+    /**
+     * @Route("book/search", name="book_handle_search")
+     * @param Request $request
+     */
+    public function bookHandleSearch(Request $request, ManagerRegistry $doctrine, PaginatorInterface $paginator): Response
+    {
+        //Get the input of the user
+        $findQuery = $request->request->all()['form']['query'];
+
+        //Get the books with the author searched by the user
+        $authorSearchedBooks = $doctrine
+            ->getRepository(Book::class)
+            ->findByAuthor($findQuery);
+
+        $authorSearchedBooks = $this->paginatePages($paginator, $request, $authorSearchedBooks);
+        
+        $searchForm = $this->createSearchForm('book_handle_search');
+
+        // Return layout for list of free books (not rented) filtered by authors
+        return $this->render('book/list.html.twig', [
+               'books' => $authorSearchedBooks,
+               'searchForm' => $searchForm->createView()
+        ]);
+    }
+    
+    /**
+     * @Route("book/user/search", name="user_book_handle_search")
+     * @param Request $request
+     */
+    public function userBookHandleSearch(Request $request, ManagerRegistry $doctrine, PaginatorInterface $paginator): Response
+    {
+        //Get the input of the user
+        $findQuery = $request->request->all()['form']['query'];
+
+        //Get the books with the author searched by the user
+        $authorSearchedBooks = $doctrine
+            ->getRepository(Book::class)
+            ->findByAuthor($findQuery);
+
+        $authorSearchedBooks = $this->paginatePages($paginator, $request, $authorSearchedBooks);
+        
+        $searchForm = $this->createSearchForm('user_book_handle_search');
+
+        // Return layout for list of free books (not rented) filtered by authors, reference, or category
+        return $this->render('book/user_book_list.html.twig', [
+               'books' => $authorSearchedBooks,
+               'searchForm' => $searchForm->createView()
+        ]);
+    }
+
+    public function createSearchForm(string $route)
+    {
+        $searchForm = $this->createFormBuilder()
+            ->setAction($this->generateUrl(route:$route))
+            ->add('query', TextType::class)
+            ->add('submit', SubmitType::class, ['label' => 'Rechercher',])
+            ->getForm();
+
+        return $searchForm ;
+    }
+
+    public function paginatePages(PaginatorInterface $paginator, Request $request, array $books)
+    {
+        $books = $paginator->paginate(
+            $books, /* query NOT result */
+            $request->query->getInt('page', 1),
+            6
+        );
+
+       return $books;
     }
 }

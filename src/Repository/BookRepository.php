@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Book;
 use App\Entity\User;
+use App\Entity\Author;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -64,6 +65,45 @@ class BookRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('b')
             ->leftJoin('b.bookRentings', 'r')
             ->where('r.renting_end is not NULL or r is NULL');
+
+        $query = $qb->getQuery();
+
+        return $query->execute();
+    }
+
+    //Get the books with the choosen author, reference, or category
+    public function findByAuthor(string $findQuery): array
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->innerJoin('b.author', 'a')
+            ->innerJoin('b.bookCategories', 'bc')
+            ->innerJoin('bc.category', 'c')
+        ;
+        $qb    
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->orX(
+                        $qb->expr()->like('a.last_name', ':findQuery'),
+                        $qb->expr()->like('a.first_name', ':findQuery')
+                    )
+                )
+            )
+            ->orWhere(
+                $qb->expr()->andX(
+                    $qb->expr()->orX(
+                        $qb->expr()->like('b.reference', ':findQuery')
+                    )
+                )
+            )
+            ->orWhere(
+                $qb->expr()->andX(
+                    $qb->expr()->orX(
+                        $qb->expr()->like('c.label', ':findQuery')
+                    )
+                )
+            )
+            ->setParameter('findQuery', '%' . $findQuery . '%')
+        ;
 
         $query = $qb->getQuery();
 
