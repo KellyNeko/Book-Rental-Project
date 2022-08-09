@@ -204,12 +204,18 @@ class BookController extends AbstractController
     public function bookHandleSearch(Request $request, ManagerRegistry $doctrine, PaginatorInterface $paginator): Response
     {
         //Get the input of the user
-        $findQuery = $request->request->all()['form']['query'];
+        if(isset($request->request->all()['form']['query']))
+        {
+            $findQuery = $request->request->all()['form']['query'];
+        }
+        else {
+            $findQuery ="";
+        }
 
         //Get the books with the author searched by the user
         $authorSearchedBooks = $doctrine
             ->getRepository(Book::class)
-            ->findByAuthor($findQuery);
+            ->findByQuery($findQuery);
 
         $authorSearchedBooks = $this->paginatePages($paginator, $request, $authorSearchedBooks);
         
@@ -229,13 +235,19 @@ class BookController extends AbstractController
     public function userBookHandleSearch(Request $request, ManagerRegistry $doctrine, PaginatorInterface $paginator): Response
     {
         //Get the input of the user
-        $findQuery = $request->request->all()['form']['query'];
+        if(isset($request->request->all()['form']['query']))
+        {
+            $findQuery = $request->request->all()['form']['query'];
+        }
+        else {
+            $findQuery ="";
+        }
 
         //Get the books with the author searched by the user
         $authorSearchedBooks = $doctrine
             ->getRepository(Book::class)
-            ->findByAuthor($findQuery);
-
+            ->findByQueryAndUser($findQuery, $this->getUser());
+        
         $authorSearchedBooks = $this->paginatePages($paginator, $request, $authorSearchedBooks);
         
         $searchForm = $this->createSearchForm('user_book_handle_search');
