@@ -7,6 +7,12 @@
     {% include '_components/nav.html.twig' %}
     <h1>Mes Livres</h1>
     {% if app.user%}
+    <div class="search-form">
+        {{ form_start(searchForm) }}
+            {{ form_widget(searchForm.query, {'attr': {'placeholder': 'Auteur, Référence, Catégorie...'}}) }}
+            {{ form_widget(searchForm.submit, {'attr': {'class': 'btn btn-primary'}}) }}
+        {{ form_end(searchForm) }}
+    </div>
     <table class="table table-striped table-bordered table-hover">
         <thead class="thead-dark">
             <tr>
