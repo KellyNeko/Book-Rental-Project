@@ -1,3 +1,11 @@
+index:
+    path: /
+    controller: App\Controller\BookController::index
+
 controllers:
     resource: ../src/Controller/
     type: attribute
+
+dashboard:
+    path: /admin
+    controller: App\Controller\Admin\DashboardController::index

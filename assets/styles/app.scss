@@ -30,7 +30,7 @@ h2 {
     position: absolute;
 }
 
-.table, .search-form {
+.table, .search-form, .create-user, .back-btn {
     margin: 20px;
     width: auto;
 }
@@ -61,6 +61,10 @@ a.nav-item.nav-link.sign-up-link:hover {
 
 a.nav-item.nav-link.connect-link:hover {
     color: #41c230;
+}
+
+a.nav-item.nav-link.user-list-link:hover {
+    color: #38b190;
 }
 
 .login-form, .connect-button {

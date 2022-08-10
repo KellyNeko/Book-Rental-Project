@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des locations{% endblock %}
+
+{# Display list of all users of the application #}
+{% block body %}
+    {% include '_components/nav.html.twig' %}
+    <h1>Liste des locations</h1>
+
+    <table class="table table-striped table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col" width="1%">#</th>
+                    <th scope="col">Utilisateur</th>
+                    <th scope="col" width="15%" class="text-center">Livre</th>
+                    <th scope="col" width="15%" class="text-center">Début de location</th>
+                    <th scope="col" width="15%" class="text-center">Fin de location</th>
+                    <th scope="col" width="15%" class="text-center">Date limite</th>
+                </tr>
+            </thead>
+            <tbody>
+                {# Loop in the books #}
+                {% for bookRenting in bookRentings %}         
+                    <tr>
+                        <td>{{bookRenting.id}}</td>
+                        <td>
+                            <a>{{bookRenting.user.lastname}}</a>
+                        </td>
+                        <td>
+                            <a>{{bookRenting.book.reference}}</a> 
+                        </td>
+                        <td>
+                            <a>{{bookRenting.rentingStart ? bookRenting.rentingStart|date('Y-m-d') : ''}}</a> 
+                        </td>
+                        <td>
+                            <a>{{bookRenting.rentingEnd ? bookRenting.rentingEnd|date('Y-m-d') : ''}}</a> 
+                        </td>
+                        <td>
+                            <a>{{bookRenting.limitDate ? bookRenting.limitDate|date('Y-m-d') : ''}}</a> 
+                        </td>
+                    </tr>
+                {% endfor %}
+        </table>
+{% endblock %}

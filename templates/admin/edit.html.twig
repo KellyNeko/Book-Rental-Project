@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier son Profil{% endblock %}
+
+{# Display of the user editing form #}
+{% block body %}
+        {% include '_components/nav.html.twig' %}
+        <h1>Modifier son Profil</h1>
+        <div class="text-center">
+                {{ form_start(form) }}
+                        {# using bootstrap for layout #}
+                        <div class="form-group">
+                                <label for="last-name-label">Nom de famille</label>
+                                {{ form_widget(form.last_name) }}
+                        </div>
+                        <div class="form-group">
+                                <label for="first-name-label">Prénom</label>
+                                {{ form_widget(form.first_name) }}
+                        </div>
+                        <div class="form-group">
+                                <label for="last-name-label">Numéro de téléphone</label>
+                                {{ form_widget(form.phone) }}
+                        </div>
+                        <div class="form-group">
+                                <label for="paswd-label">Mot de passe</label>
+                                {{ form_widget(form.password, {'attr': {'placeholder': '***'}}) }}
+                        </div>
+                        <button class="btn btn-lg btn-primary connect-button">Modifier</button>
+                {{ form_end(form) }}
+                <a class="btn btn-outline-danger connect-button" href="{{ path('admin') }}">Retour</a>
+        </div>
+        {# {{ include('user_crud/_delete_form.html.twig') }} #}
+{% endblock %}
