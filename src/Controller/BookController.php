@@ -217,15 +217,26 @@ class BookController extends AbstractController
         //Get the books with the author searched by the user
         $authorSearchedBooks = $doctrine
             ->getRepository(Book::class)
-            ->findByQuery($findQuery);
+            ->findByAuthorQuery($findQuery);
 
-        $authorSearchedBooks = $this->paginatePages($paginator, $request, $authorSearchedBooks);
+        //Get the books with the category searched by the user
+        $categorySearchedBooks = $doctrine
+            ->getRepository(Book::class)
+            ->findByCategoryQuery($findQuery);
+
+        //Get the books with the reference searched by the user
+        $referenceSearchedBooks = $doctrine
+            ->getRepository(Book::class)
+            ->findByReferenceQuery($findQuery);
+
+        $concatenateQuery = $authorSearchedBooks + $categorySearchedBooks + $referenceSearchedBooks;
+        $concatenateQuery = $this->paginatePages($paginator, $request, $concatenateQuery);
         
         $searchForm = $this->createSearchForm('book_handle_search');
 
         // Return layout for list of free books (not rented) filtered by authors
         return $this->render('book/list.html.twig', [
-               'books' => $authorSearchedBooks,
+               'books' => $concatenateQuery,
                'searchForm' => $searchForm->createView()
         ]);
     }
@@ -248,15 +259,26 @@ class BookController extends AbstractController
         //Get the books with the author searched by the user
         $authorSearchedBooks = $doctrine
             ->getRepository(Book::class)
-            ->findByQueryAndUser($findQuery, $this->getUser());
-        
-        $authorSearchedBooks = $this->paginatePages($paginator, $request, $authorSearchedBooks);
+            ->findByAuthorAndUserQuery($findQuery, $this->getUser());
+
+        //Get the books with the category searched by the user
+        $categorySearchedBooks = $doctrine
+            ->getRepository(Book::class)
+            ->findByCategoryAndUserQuery($findQuery, $this->getUser());
+
+        //Get the books with the reference searched by the user
+        $referenceSearchedBooks = $doctrine
+            ->getRepository(Book::class)
+            ->findByReferenceAndUserQuery($findQuery, $this->getUser());
+
+        $concatenateQuery = $authorSearchedBooks + $categorySearchedBooks + $referenceSearchedBooks;
+        $concatenateQuery = $this->paginatePages($paginator, $request, $concatenateQuery);
         
         $searchForm = $this->createSearchForm('user_book_handle_search');
 
         // Return layout for list of free books (not rented) filtered by authors, reference, or category
         return $this->render('book/user_book_list.html.twig', [
-               'books' => $authorSearchedBooks,
+               'books' => $concatenateQuery,
                'searchForm' => $searchForm->createView()
         ]);
     }

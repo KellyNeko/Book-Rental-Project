@@ -71,13 +71,10 @@ class BookRepository extends ServiceEntityRepository
         return $query->execute();
     }
 
-    //Get the books with the choosen author, reference, or category
-    public function findByQuery(string $findQuery): array
+    public function findByAuthorQuery(string $findQuery): array
     {
         $qb = $this->createQueryBuilder('b')
             ->innerJoin('b.author', 'a')
-            ->innerJoin('b.bookCategories', 'bc')
-            ->innerJoin('bc.category', 'c')
         ;
         $qb    
             ->where(
@@ -88,14 +85,23 @@ class BookRepository extends ServiceEntityRepository
                     )
                 )
             )
-            ->orWhere(
-                $qb->expr()->andX(
-                    $qb->expr()->orX(
-                        $qb->expr()->like('b.reference', ':findQuery')
-                    )
-                )
-            )
-            ->orWhere(
+            ->setParameter('findQuery', '%' . $findQuery . '%')
+            ->orderBy('b.id', 'ASC');
+        ;
+
+        $query = $qb->getQuery();
+
+        return $query->execute();
+    }
+
+    public function findByCategoryQuery(string $findQuery): array
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->innerJoin('b.bookCategories', 'bc')
+            ->innerJoin('bc.category', 'c')
+        ;
+        $qb    
+            ->where(
                 $qb->expr()->andX(
                     $qb->expr()->orX(
                         $qb->expr()->like('c.label', ':findQuery')
@@ -111,12 +117,31 @@ class BookRepository extends ServiceEntityRepository
         return $query->execute();
     }
 
-    public function findByQueryAndUser(string $findQuery, User $user): array
+    public function findByReferenceQuery(string $findQuery): array
+    {
+        $qb = $this->createQueryBuilder('b');
+
+        $qb    
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->orX(
+                        $qb->expr()->like('b.reference', ':findQuery')
+                    )
+                )
+            )
+            ->setParameter('findQuery', '%' . $findQuery . '%')
+            ->orderBy('b.id', 'ASC');
+        ;
+
+        $query = $qb->getQuery();
+
+        return $query->execute();
+    }
+
+    public function findByAuthorAndUserQuery(string $findQuery, User $user): array
     {
         $qb = $this->createQueryBuilder('b')
             ->innerJoin('b.author', 'a')
-            ->innerJoin('b.bookCategories', 'bc')
-            ->innerJoin('bc.category', 'c')
             ->innerJoin('b.bookRentings', 'r')
         ;
         $qb    
@@ -128,17 +153,53 @@ class BookRepository extends ServiceEntityRepository
                     )
                 )
             )
-            ->orWhere(
-                $qb->expr()->andX(
-                    $qb->expr()->orX(
-                        $qb->expr()->like('b.reference', ':findQuery')
-                    )
-                )
-            )
-            ->orWhere(
+            ->andWhere('r.renting_end is NULL AND r.user = :user')
+            ->setParameter('findQuery', '%' . $findQuery . '%')
+            ->setParameter('user', $user)
+            ->orderBy('r.id', 'DESC')
+        ;
+
+        $query = $qb->getQuery();
+
+        return $query->execute();
+    }   
+
+    public function findByCategoryAndUserQuery(string $findQuery, User $user): array
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->innerJoin('b.bookCategories', 'bc')
+            ->innerJoin('bc.category', 'c')
+            ->innerJoin('b.bookRentings', 'r')
+        ;
+        $qb    
+            ->where(
                 $qb->expr()->andX(
                     $qb->expr()->orX(
                         $qb->expr()->like('c.label', ':findQuery')
+                    )
+                )
+            )
+            ->andWhere('r.renting_end is NULL AND r.user = :user')
+            ->setParameter('findQuery', '%' . $findQuery . '%')
+            ->setParameter('user', $user)
+            ->orderBy('r.id', 'DESC')
+        ;
+
+        $query = $qb->getQuery();
+
+        return $query->execute();
+    }
+
+    public function findByReferenceAndUserQuery(string $findQuery, User $user): array
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->innerJoin('b.bookRentings', 'r')
+        ;
+        $qb    
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->orX(
+                        $qb->expr()->like('b.reference', ':findQuery')
                     )
                 )
             )
