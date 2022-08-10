@@ -20,9 +20,11 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
+/**
+ * @Route("/book")
+ */
 class BookController extends AbstractController
 {
-    public $findQuery = "";
     /**
 	 * @Route("/", name="app_book")
 	 */
@@ -51,7 +53,7 @@ class BookController extends AbstractController
     }
 
     /**
-	 * @Route("/book/list", name="book_list")
+	 * @Route("/list", name="book_list")
 	 */
     //List all not rented books
     public function list(ManagerRegistry $doctrine, PaginatorInterface $paginator, Request $request): Response
@@ -72,7 +74,7 @@ class BookController extends AbstractController
     }
 
     /**
-     * @Route("book/{id}/show", name="book_show")
+     * @Route("/{id}/show", name="book_show")
      */
     //Show details of the book selected by the user
     public function show($id, ManagerRegistry $doctrine): Response
@@ -93,7 +95,7 @@ class BookController extends AbstractController
     }
 
     /**
-	 * @Route("/book/user/list", name="user_book_list")
+	 * @Route("/user/list", name="user_book_list")
 	 */
     //List the books rented by the connected user
     public function userBookList(ManagerRegistry $doctrine, PaginatorInterface $paginator, Request $request): Response
@@ -115,7 +117,7 @@ class BookController extends AbstractController
     }
 
     /**
-	 * @Route("/book/user/{id}/return", name="user_book_return")
+	 * @Route("/user/{id}/return", name="user_book_return")
 	 */
     //Show the book to be returned by the user
     public function userBookReturn($id, ManagerRegistry $doctrine): Response
@@ -136,7 +138,7 @@ class BookController extends AbstractController
     }
 
     /**
-     * @Route("book/{id}/return", name="book_return")
+     * @Route("/{id}/return", name="book_return")
      */
     public function bookReturn($id, ManagerRegistry $doctrine): Response
     {
@@ -160,7 +162,7 @@ class BookController extends AbstractController
     }
 
     /**
-     * @Route("book/user/{id}/rent", name="book_user_rent")
+     * @Route("/user/{id}/rent", name="book_user_rent")
      */
     public function userRent($id, ManagerRegistry $doctrine): Response
     {
@@ -180,7 +182,7 @@ class BookController extends AbstractController
     }
 
     /**
-     * @Route("book/{id}/rent", name="book_rent")
+     * @Route("/{id}/rent", name="book_rent")
      */
     public function rent($id, ManagerRegistry $doctrine): Response
     {
@@ -198,7 +200,7 @@ class BookController extends AbstractController
     }
 
     /**
-     * @Route("book/search", name="book_handle_search")
+     * @Route("/search", name="book_handle_search")
      * @param Request $request
      */
     public function bookHandleSearch(Request $request, ManagerRegistry $doctrine, PaginatorInterface $paginator): Response
@@ -229,7 +231,7 @@ class BookController extends AbstractController
     }
     
     /**
-     * @Route("book/user/search", name="user_book_handle_search")
+     * @Route("/user/search", name="user_book_handle_search")
      * @param Request $request
      */
     public function userBookHandleSearch(Request $request, ManagerRegistry $doctrine, PaginatorInterface $paginator): Response

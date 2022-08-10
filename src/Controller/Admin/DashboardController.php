@@ -1,31 +1,33 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
-use App\Entity\User;
-use App\Form\UserType;
-use App\Repository\UserRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\UserRepository;
+use App\Repository\BookRentingRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use App\Entity\User;
+use App\Entity\BookRenting;
+use App\Form\UserType;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\ORM\PersistentCollection;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-#[Route('/user/crud')]
-class UserCrudController extends AbstractController
+class DashboardController extends AbstractController
 {
-    #[Route('/', name: 'app_user_crud_index', methods: ['GET'])]
-    public function index(UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher): Response
+    #[Route('/admin', name: 'admin')]
+    public function index(UserRepository $userRepository): Response
     {
         return $this->render('admin/index.html.twig', [
             'users' => $userRepository->findAll(),
         ]);
     }
 
-    #[Route('/new', name: 'app_user_crud_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_admin_crud_new', methods: ['GET', 'POST'])]
     //To Sign Up -> Create new user
     public function new(Request $request, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
@@ -55,7 +57,7 @@ class UserCrudController extends AbstractController
 
             $userRepository->add($user, true);
 
-            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('user_crud/new.html.twig', [
@@ -64,16 +66,7 @@ class UserCrudController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_user_crud_show', methods: ['GET'])]
-    //Show all the selected user's details
-    public function show(User $user): Response
-    {
-        return $this->render('user_crud/show.html.twig', [
-            'user' => $user,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_user_crud_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_admin_crud_edit', methods: ['GET', 'POST'])]
     //Edit the user's details
     public function edit(Request $request, User $user, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
@@ -92,23 +85,40 @@ class UserCrudController extends AbstractController
 
             $userRepository->add($user, true);
 
-            return $this->redirectToRoute('app_book', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('user_crud/edit.html.twig', [
+        return $this->renderForm('admin/edit.html.twig', [
             'user' => $user,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_user_crud_delete', methods: ['POST'])]
-    //Delete the user
-    public function delete(Request $request, User $user, UserRepository $userRepository): Response
+    /**
+	 * @Route("/renting/list", name="admin_renting_list")
+	 */
+    //List all not rented books
+    public function rentingList(ManagerRegistry $doctrine, Request $request): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
-            $userRepository->remove($user, true);
-        }
+        // Get all free books from DB
+        $repository = $doctrine->getRepository(BookRenting::class);
+        $bookRentings = $repository->findAll();
 
-        return $this->redirectToRoute('app_book', [], Response::HTTP_SEE_OTHER);
+        // Return layout for list of free books (not rented)
+        return $this->render('admin/book_rentings.html.twig', [
+            'bookRentings' => $bookRentings
+        ]);
+    }
+
+    public function configureDashboard(): Dashboard
+    {
+        return Dashboard::new()
+            ->setTitle('Book Rental Project');
+    }
+
+    public function configureMenuItems(): iterable
+    {
+        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+        // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
 }

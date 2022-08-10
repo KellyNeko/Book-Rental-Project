@@ -5,6 +5,12 @@
         <div class="navbar-nav">
             <a class="nav-item nav-link home-link" href="{{ path('app_book') }}">Accueil</a>
             {% if app.user %}
+                {% for role in app.user.roles %}
+                    {% if role == "ROLE_ADMIN" %}
+                        <a class="nav-item nav-link user-list-link" href="{{ path('admin') }}">Liste des utilisateurs</a>
+                        <a class="nav-item nav-link user-list-link" href="{{ path('admin_renting_list') }}">Liste des locations</a>
+                    {% endif %}
+                {% endfor %}
                 <a class="nav-item nav-link free-books-link" href="{{ path('book_list') }}">Livres disponibles</a>
                 <a class="nav-item nav-link my-books-link" href="{{ path('user_book_list') }}">Mes Livres</a>
                 <a class="nav-item nav-link edit-user-link" href="{{ path('app_user_crud_edit', {'id': app.user.id}) }}">Modifier son profil</a>

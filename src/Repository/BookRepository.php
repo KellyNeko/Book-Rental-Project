@@ -72,11 +72,6 @@ class BookRepository extends ServiceEntityRepository
     }
 
     //Get the books with the choosen author, reference, or category
-    public function findCategories(): array
-    {
-    }
-
-    //Get the books with the choosen author, reference, or category
     public function findByQuery(string $findQuery): array
     {
         $qb = $this->createQueryBuilder('b')
@@ -133,7 +128,6 @@ class BookRepository extends ServiceEntityRepository
                     )
                 )
             )
-            ->andWhere('r.renting_end is NULL AND r.user = :user')
             ->orWhere(
                 $qb->expr()->andX(
                     $qb->expr()->orX(
@@ -141,7 +135,6 @@ class BookRepository extends ServiceEntityRepository
                     )
                 )
             )
-            ->andWhere('r.renting_end is NULL AND r.user = :user')
             ->orWhere(
                 $qb->expr()->andX(
                     $qb->expr()->orX(
