@@ -203,7 +203,7 @@ class BookController extends AbstractController
      * @Route("/search", name="book_handle_search")
      * @param Request $request
      */
-    public function bookHandleSearch(Request $request, ManagerRegistry $doctrine, PaginatorInterface $paginator): Response
+    public function bookHandleSearch(Request $request, ManagerRegistry $doctrine): Response
     {
         //Get the input of the user
         if(isset($request->request->all()['form']['query']))
@@ -230,12 +230,11 @@ class BookController extends AbstractController
             ->findByReferenceQuery($findQuery);
 
         $concatenateQuery = $authorSearchedBooks + $categorySearchedBooks + $referenceSearchedBooks;
-        $concatenateQuery = $this->paginatePages($paginator, $request, $concatenateQuery);
-        
+
         $searchForm = $this->createSearchForm('book_handle_search');
 
         // Return layout for list of free books (not rented) filtered by authors
-        return $this->render('book/list.html.twig', [
+        return $this->render('book/searched_list.html.twig', [
                'books' => $concatenateQuery,
                'searchForm' => $searchForm->createView()
         ]);
@@ -245,7 +244,7 @@ class BookController extends AbstractController
      * @Route("/user/search", name="user_book_handle_search")
      * @param Request $request
      */
-    public function userBookHandleSearch(Request $request, ManagerRegistry $doctrine, PaginatorInterface $paginator): Response
+    public function userBookHandleSearch(Request $request, ManagerRegistry $doctrine): Response
     {
         //Get the input of the user
         if(isset($request->request->all()['form']['query']))
@@ -272,12 +271,11 @@ class BookController extends AbstractController
             ->findByReferenceAndUserQuery($findQuery, $this->getUser());
 
         $concatenateQuery = $authorSearchedBooks + $categorySearchedBooks + $referenceSearchedBooks;
-        $concatenateQuery = $this->paginatePages($paginator, $request, $concatenateQuery);
         
         $searchForm = $this->createSearchForm('user_book_handle_search');
 
         // Return layout for list of free books (not rented) filtered by authors, reference, or category
-        return $this->render('book/user_book_list.html.twig', [
+        return $this->render('book/user_book_searched_list.html.twig', [
                'books' => $concatenateQuery,
                'searchForm' => $searchForm->createView()
         ]);
