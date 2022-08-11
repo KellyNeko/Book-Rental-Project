@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Livres{% endblock %}
+
+{# Show all books rented by the connected user #}
+{% block body %}
+    {% include '_components/nav.html.twig' %}
+    <h1>Mes Livres</h1>
+    {% if app.user%}
+    <div class="search-form">
+        {{ form_start(searchForm) }}
+            {{ form_widget(searchForm.query, {'attr': {'placeholder': 'Auteur, Référence, Catégorie...'}}) }}
+            {{ form_widget(searchForm.submit, {'attr': {'class': 'btn btn-primary'}}) }}
+        {{ form_end(searchForm) }}
+    </div>
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col" width="1%">#</th>
+                <th scope="col">Référence</th>
+                <th scope="col" width="15%" class="text-center">Auteur</th>
+                <th scope="col" width="15%" class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {# Loop in the rented books #}
+            {% for book in books %}         
+                <tr>
+                    <td>{{book.id}}</td>
+                    <td>
+                        <a href="{{ path('user_book_return', {'id': book.id}) }}" class="btn btn btn-outline-dark">{{book.reference}}</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('user_book_return', {'id': book.id}) }}" class="btn btn btn-outline-dark">{{book.author.lastname ~" "~ book.author.firstname}}</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('user_book_return', {'id': book.id}) }}" class="btn btn-outline-danger">Rendre</a>
+                    </td>
+                </tr>
+            {% endfor %}
+    </table>
+    {% else %}
+        <h2>Vous n'êtes pas connecté</h2>
+    {% endif %}
+    </tbody>
+    
+{% endblock %}
