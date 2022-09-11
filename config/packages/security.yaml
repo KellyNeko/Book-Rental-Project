@@ -9,16 +9,32 @@ security:
             entity:
                 class: App\Entity\User
                 property: last_name
+        
+        api_key_user_provider:
+            entity:
+                class: App\Entity\User
+                property: apiKey
+
+        # jwt:
+        #     lexik_jwt:
+        #         class: App\Entity\User
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
         main:
-            lazy: true
-            provider: app_user_provider
-            custom_authenticator: App\Security\LogInFormAuthenticator
-            logout:
-                path: app_logout
+            # anonymous: true
+            # guard:  
+            #     authenticators:
+            #         App\Security\ApiKeyAuthenticator
+            provider: api_key_user_provider
+        # main:
+        #     lazy: true
+        #     provider: app_user_provider
+        #     custom_authenticator: App\Security\LogInFormAuthenticator
+        #     logout:
+        #         path: app_logout
                 # where to redirect after logout
                 # target: app_any_route
 

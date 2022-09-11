@@ -50,6 +50,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: BookRenting::class, orphanRemoval: true)]
     private Collection $bookRenting;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $apiKey = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -199,5 +202,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getBookRenting(): Collection
     {
         return $this->bookRenting;
+    }
+
+    public function getApiKey(): ?string
+    {
+        return $this->apiKey;
+    }
+
+    public function setApiKey(?string $apiKey): self
+    {
+        $this->apiKey = $apiKey;
+
+        return $this;
     }
 }
